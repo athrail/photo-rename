@@ -1,5 +1,5 @@
 from typing import List
-from os.path import normpath, join, isfile
+from os.path import normpath, join, isfile, splitext
 from os import listdir, rename
 from datetime import datetime
 
@@ -51,7 +51,7 @@ def print_rename_table():
     table.add_column('Renamed file')
 
     for entry in entries:
-        table.add_row(entry.filename, entry.date.isoformat(), entry.output)
+        table.add_row(entry.filename, entry.date.strftime('%Y-%m-%d %H:%M:%S'), entry.output)
 
     console.print(table)
     print()
@@ -64,7 +64,8 @@ def main(input: str):
         f'[blue]Looking for photos at:[/blue] [bold yellow]{input}[/bold yellow]')
     for item in listdir(input):
         if isfile(join(input, item)):
-            if item.endswith('.JPG'):
+            filename, file_extension = splitext(item)
+            if file_extension.lower() in ('.jpg', '.jpeg'):
                 photo_path = join(input, item)
                 date = grab_image_datetime(photo_path)
                 if date is not None:
@@ -74,7 +75,6 @@ def main(input: str):
                 else:
                     print(
                         f'[bold red]Photo at [bold yellow]{photo_path}[/bold yellow] doesn\'t contain date information[/bold red]')
-                # break
     
     print_rename_table()
 
