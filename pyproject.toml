@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 typer = "^0.7.0"
+pillow = "^9.4.0"
+rich = "^13.3.3"
 
 
 [build-system]
