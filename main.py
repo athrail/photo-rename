@@ -24,7 +24,8 @@ class RenameEntry:
     def __init__(self, filename: str, date: datetime) -> None:
         self.filename = filename
         self.date = date
-        self.output = '__'.join([date.strftime("%Y_%m_%d_%H%M%S"), filename])
+        # self.output = '__'.join([date.strftime("%Y_%m_%d_%H%M%S"), filename])
+        self.output = '__'.join([date.strftime("%Y-%m-%d"), filename])
 
 
 def grab_image_datetime(path: str) -> datetime | None:
@@ -43,6 +44,7 @@ __version__ = '0.1.0'
 
 entries: List[RenameEntry] = []
 
+
 def print_rename_table():
     print(f'[bold green]Following renames will be performed[/bold green]')
     table = Table(title='Rename list')
@@ -51,10 +53,12 @@ def print_rename_table():
     table.add_column('Renamed file')
 
     for entry in entries:
-        table.add_row(entry.filename, entry.date.strftime('%Y-%m-%d %H:%M:%S'), entry.output)
+        table.add_row(entry.filename, entry.date.strftime(
+            '%Y-%m-%d %H:%M:%S'), entry.output)
 
     console.print(table)
     print()
+
 
 def main(input: str):
     print(
@@ -75,10 +79,11 @@ def main(input: str):
                 else:
                     print(
                         f'[bold red]Photo at [bold yellow]{photo_path}[/bold yellow] doesn\'t contain date information[/bold red]')
-    
+
     print_rename_table()
 
-    confirm = typer.confirm('Do you want to continue with rename? (this is irreversible so make backup)')
+    confirm = typer.confirm(
+        'Do you want to continue with rename? (this is irreversible so make backup)')
     if not confirm:
         print(f'[bold yellow]Aborting rename[/bold yellow]')
         return
@@ -86,11 +91,13 @@ def main(input: str):
     try:
         for entry in entries:
             rename(join(input, entry.filename), join(input, entry.output))
-            print(f'[green bold]Renamed [bold yellow]{entry.filename}[/bold yellow] to [bold yellow]{entry.output}[/bold yellow] successfuly[/green bold]')
+            print(
+                f'[green bold]Renamed [bold yellow]{entry.filename}[/bold yellow] to [bold yellow]{entry.output}[/bold yellow] successfuly[/green bold]')
     except Exception as e:
-        print(f'[bold red]Couldn\'t rename one of the files due to error: {e}[/bold red]')
+        print(
+            f'[bold red]Couldn\'t rename one of the files due to error: {e}[/bold red]')
         return
-    
+
     print(f'[bold blue]All files renamed.[/bold blue]')
 
 
