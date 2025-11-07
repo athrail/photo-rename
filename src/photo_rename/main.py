@@ -47,6 +47,7 @@ __version__ = "0.1.0"
 
 entries: List[RenameEntry] = []
 
+
 def print_rename_table():
     print(f"[bold green]Following renames will be performed[/bold green]")
     table = Table(title="Rename list")
@@ -55,18 +56,18 @@ def print_rename_table():
     table.add_column("Renamed file")
 
     for entry in entries:
-        table.add_row(entry.filename, entry.date.strftime(TABLE_DATE_FORMAT), entry.output)
+        table.add_row(
+            entry.filename, entry.date.strftime(TABLE_DATE_FORMAT), entry.output
+        )
 
     console.print(table)
     print()
 
 
 def main(input: str):
-    print(
-        f"[bold green]Welcome to photo-rename version {__version__}[/bold green]")
+    print(f"[bold green]Welcome to photo-rename version {__version__}[/bold green]")
     input = normpath(input)
-    print(
-        f"[blue]Looking for photos at:[/blue] [bold yellow]{input}[/bold yellow]")
+    print(f"[blue]Looking for photos at:[/blue] [bold yellow]{input}[/bold yellow]")
     for item in listdir(input):
         if isfile(join(input, item)):
             filename, file_extension = splitext(item)
@@ -75,16 +76,19 @@ def main(input: str):
                 date = grab_image_datetime(photo_path)
                 if date is not None:
                     print(
-                        f"Found date for file [bold yellow]{photo_path}[/bold yellow] - {date}")
+                        f"Found date for file [bold yellow]{photo_path}[/bold yellow] - {date}"
+                    )
                     entries.append(RenameEntry(item, date))
                 else:
                     print(
-                        f"[bold red]Photo at [bold yellow]{photo_path}[/bold yellow] doesn\"t contain date information[/bold red]")
+                        f'[bold red]Photo at [bold yellow]{photo_path}[/bold yellow] doesn"t contain date information[/bold red]'
+                    )
 
     print_rename_table()
 
     confirm = typer.confirm(
-        "Do you want to continue with rename? (this is irreversible so make backup)")
+        "Do you want to continue with rename? (this is irreversible so make backup)"
+    )
     if not confirm:
         print(f"[bold yellow]Aborting rename[/bold yellow]")
         return
@@ -93,13 +97,19 @@ def main(input: str):
         for entry in entries:
             rename(join(input, entry.filename), join(input, entry.output))
             print(
-                f"[green bold]Renamed [bold yellow]{entry.filename}[/bold yellow] to [bold yellow]{entry.output}[/bold yellow] successfuly[/green bold]")
+                f"[green bold]Renamed [bold yellow]{entry.filename}[/bold yellow] to [bold yellow]{entry.output}[/bold yellow] successfuly[/green bold]"
+            )
     except Exception as e:
         print(
-            f"[bold red]Couldn\"t rename one of the files due to error: {e}[/bold red]")
+            f'[bold red]Couldn"t rename one of the files due to error: {e}[/bold red]'
+        )
         return
 
     print(f"[bold blue]All files renamed.[/bold blue]")
+
+
+def main_cli():
+    typer.run(main)
 
 
 if __name__ == "__main__":

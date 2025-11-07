@@ -2,7 +2,9 @@
 name = "photo-rename"
 version = "0.1.0"
 description = "Tool to rename photos based on EXIF dates"
-authors = ["Krzysztof Lewandowski <krzlew1@gmail.com>"]
+authors = [
+  { name = "Krzysztof Lewandowski", email = "krzlew1@gmail.com" },
+]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,3 +12,10 @@ dependencies = [
     "rich>=14.2.0",
     "typer>=0.20.0",
 ]
+
+[build-system]
+requires = ["uv_build >= 0.9.5, <0.10.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+photo-rename = "photo_rename.main:main_cli"
