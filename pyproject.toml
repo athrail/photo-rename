@@ -1,17 +1,12 @@
-[tool.poetry]
+[project]
 name = "photo-rename"
 version = "0.1.0"
-description = ""
+description = "Tool to rename photos based on EXIF dates"
 authors = ["Krzysztof Lewandowski <krzlew1@gmail.com>"]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.11"
-typer = "^0.7.0"
-pillow = "^9.4.0"
-rich = "^13.3.3"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.13"
+dependencies = [
+    "pillow>=12.0.0",
+    "rich>=14.2.0",
+    "typer>=0.20.0",
+]
