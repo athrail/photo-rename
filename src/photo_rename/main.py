@@ -5,7 +5,6 @@ from datetime import datetime
 
 import typer
 from PIL import Image
-from PIL.ExifTags import TAGS
 from rich import print
 from rich.console import Console
 from rich.table import Table
@@ -49,7 +48,7 @@ entries: List[RenameEntry] = []
 
 
 def print_rename_table():
-    print(f"[bold green]Following renames will be performed[/bold green]")
+    print("[bold green]Following renames will be performed[/bold green]")
     table = Table(title="Rename list")
     table.add_column("Original file")
     table.add_column("Date taken")
@@ -70,7 +69,7 @@ def main(input: str):
     print(f"[blue]Looking for photos at:[/blue] [bold yellow]{input}[/bold yellow]")
     for item in listdir(input):
         if isfile(join(input, item)):
-            filename, file_extension = splitext(item)
+            _, file_extension = splitext(item)
             if file_extension.lower() in (".jpg", ".jpeg"):
                 photo_path = join(input, item)
                 date = grab_image_datetime(photo_path)
@@ -90,7 +89,7 @@ def main(input: str):
         "Do you want to continue with rename? (this is irreversible so make backup)"
     )
     if not confirm:
-        print(f"[bold yellow]Aborting rename[/bold yellow]")
+        print("[bold yellow]Aborting rename[/bold yellow]")
         return
 
     try:
@@ -105,7 +104,7 @@ def main(input: str):
         )
         return
 
-    print(f"[bold blue]All files renamed.[/bold blue]")
+    print("[bold blue]All files renamed.[/bold blue]")
 
 
 def main_cli():
