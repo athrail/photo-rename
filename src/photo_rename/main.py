@@ -84,6 +84,12 @@ def main(input: str):
                         f'[bold red]Photo at [bold yellow]{photo_path}[/bold yellow] doesn"t contain date information[/bold red]'
                     )
 
+    if len(entries) < 1:
+        print(
+            "[bold yellow]No files that can be renamed found. Exiting...[/bold yellow]"
+        )
+        return
+
     print_rename_table()
 
     confirm = typer.confirm(
