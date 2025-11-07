@@ -1,1 +1,4 @@
 test_dir
+src/photo_rename/__pycache__
+tests/__pycache__
+src/photo_rename/__pycache__

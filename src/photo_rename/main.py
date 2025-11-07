@@ -67,6 +67,7 @@ def main(input: str):
     print(f"[bold green]Welcome to photo-rename version {__version__}[/bold green]")
     input = normpath(input)
     print(f"[blue]Looking for photos at:[/blue] [bold yellow]{input}[/bold yellow]")
+
     for item in listdir(input):
         if isfile(join(input, item)):
             _, file_extension = splitext(item)
