@@ -12,6 +12,7 @@ dependencies = [
     "pytest>=8.4.2",
     "rich>=14.2.0",
     "typer>=0.20.0",
+    "wxpython>=4.2.4",
 ]
 
 [build-system]
