@@ -1,60 +1,17 @@
 import sys
-from datetime import datetime
-from os import close, listdir, rename
-from os.path import normpath, join, isfile, splitext
-from pathlib import Path
-from typing import List
+from os import rename
+from os.path import join, isfile, splitext
+
+import photo_rename.lib as lib
 
 import gi
-from PIL import Image
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gio, Gtk, GLib
 
-__version__ = "0.1.0"
 
-EXIF_DATETIME_TAG = 0x132
-EXIF_DATETIME_ORIG_TAG = 0x9003
-EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
-# OUTPUT_DATE_FORMAT = "%Y_%m_%d_%H%M%S"
 OUTPUT_DATE_FORMAT = "%Y-%m-%d"
-TABLE_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
-
-
-def grab_image_datetime(path: str) -> datetime | None:
-    with Image.open(path) as image:
-        exifdata = image.getexif()
-        date = exifdata.get(EXIF_DATETIME_ORIG_TAG)
-        if date is None:
-            date = exifdata.get(EXIF_DATETIME_TAG)
-            if date is None:
-                return None
-
-        return datetime.strptime(date, EXIF_DATE_FORMAT)
-
-
-class RenameEntry:
-    filename: str
-    date: datetime
-    output: str
-
-    def __init__(self, filename: str, date: datetime) -> None:
-        self.filename = filename
-        self.date = date
-        self.output = "_".join([date.strftime(OUTPUT_DATE_FORMAT), filename])
-
-    def __repr__(self) -> str:
-        return f"{self.filename} -> {self.output}"
-
-    def __str__(self) -> str:
-        return f"{self.filename} -> {self.output}"
-
-    def as_list(self):
-        return [self.filename, self.date, self.output]
-
-
-entries: List[RenameEntry] = []
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -104,6 +61,8 @@ class MainWindow(Gtk.ApplicationWindow):
             modal=True,
         )
 
+        self._entries = []
+
     def _new_entries_box(self):
         if hasattr(self, "entries_box") and self.entries_box is not None:
             self.content.remove(self.entries_box)
@@ -116,9 +75,9 @@ class MainWindow(Gtk.ApplicationWindow):
     def _refresh_entries(self):
         self._new_entries_box()
 
-        if len(entries) > 0:
+        if len(self._entries) > 0:
             self.rename_button.set_visible(True)
-            for entry in entries:
+            for entry in self._entries:
                 entry_box = Gtk.Box(
                     orientation=Gtk.Orientation.HORIZONTAL, hexpand=True
                 )
@@ -152,7 +111,7 @@ class MainWindow(Gtk.ApplicationWindow):
         dialog = Adw.AboutWindow(
             transient_for=self,
             application_name="Photo Renamer",
-            version=__version__,
+            version=lib.__version__,
             developer_name="Krzysztof Lewandowski",
             license_type=Gtk.License.MIT_X11,
             comments="Automatically rename your photos based on EXIF data",
@@ -178,16 +137,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.selected_dir is None:
             return
 
-        entries.clear()
-
-        for item in listdir(self.selected_dir):
-            if isfile(join(self.selected_dir, item)):
-                _, file_extension = splitext(item)
-                if file_extension.lower() in (".jpg", ".jpeg"):
-                    photo_path = join(self.selected_dir, item)
-                    date = grab_image_datetime(photo_path)
-                    if date is not None:
-                        entries.append(RenameEntry(item, date))
+        self._entries = lib.traverse_dir_for_images(self.selected_dir)
 
         self._refresh_entries()
 
@@ -198,8 +148,7 @@ class MainWindow(Gtk.ApplicationWindow):
             return
 
         try:
-            for entry in entries:
-                print(entry)
+            for entry in self._entries:
                 rename(
                     join(self.selected_dir, entry.filename),
                     join(self.selected_dir, entry.output),
@@ -220,7 +169,7 @@ class MainWindow(Gtk.ApplicationWindow):
         alert.add_response("ok", "_OK")
         alert.choose(parent=self)
 
-        entries.clear()
+        self._entries.clear()
         self._refresh_entries()
 
 
