@@ -9,8 +9,6 @@ from rich.table import Table
 
 import photo_rename.lib as lib
 
-TABLE_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
-
 console = Console()
 
 
@@ -23,7 +21,7 @@ def print_rename_table(entries: List[lib.RenameEntry]):
 
     for entry in entries:
         table.add_row(
-            entry.filename, entry.date.strftime(TABLE_DATE_FORMAT), entry.output
+            entry.filename, entry.date.strftime(lib.TABLE_DATE_FORMAT), entry.output
         )
 
     console.print(table)

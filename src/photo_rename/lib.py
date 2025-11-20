@@ -1,7 +1,5 @@
 from datetime import datetime
 from typing import List
-from os.path import join, isfile, splitext
-from os import listdir
 from pathlib import Path
 
 from PIL import Image
@@ -12,6 +10,7 @@ EXIF_DATETIME_ORIG_TAG = 0x9003
 EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
 # OUTPUT_DATE_FORMAT = "%Y_%m_%d_%H%M%S"
 OUTPUT_DATE_FORMAT = "%Y-%m-%d"
+TABLE_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
 
 __version__ = "0.2.0"
 
