@@ -48,59 +48,26 @@ class MainWindow(Gtk.ApplicationWindow):
         )
         self.main_box.append(self.content)
 
+        self._entries = []
         self._new_entries_grid()
         self.no_entries_label = Gtk.Label(
             label="No entries found, select a directory with images inside",
             margin_top=15,
             margin_bottom=15,
+            hexpand=True,
         )
-        self.entries_grid.attach(self.no_entries_label, 0, 1, 3, 1)
+        self._refresh_entries()
 
         self.dir_dialog = Gtk.FileDialog(
             title="Chose directory",
             modal=True,
         )
 
-        self._entries = []
-
     def _new_entries_grid(self):
         if hasattr(self, "entries_grid") and self.entries_grid is not None:
             self.content.remove(self.entries_grid)
 
         self.entries_grid = Gtk.Grid(row_spacing=15, column_spacing=15, hexpand=True)
-
-        self.entries_grid.attach(
-            Gtk.Label(
-                hexpand=True,
-                label='<span weight="bold" size="large">Original file name</span>',
-                use_markup=True,
-            ),
-            0,
-            0,
-            1,
-            1,
-        )
-        self.entries_grid.attach(
-            Gtk.Label(
-                label='<span weight="bold" size="large">Date taken</span>',
-                use_markup=True,
-            ),
-            1,
-            0,
-            1,
-            1,
-        )
-        self.entries_grid.attach(
-            Gtk.Label(
-                hexpand=True,
-                label='<span weight="bold" size="large">Output file name</span>',
-                use_markup=True,
-            ),
-            2,
-            0,
-            1,
-            1,
-        )
 
         self.content.append(self.entries_grid)
 
@@ -109,6 +76,40 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if len(self._entries) > 0:
             self.rename_button.set_visible(True)
+
+            self.entries_grid.attach(
+                Gtk.Label(
+                    hexpand=True,
+                    label='<span weight="bold" size="large">Original file name</span>',
+                    use_markup=True,
+                ),
+                0,
+                0,
+                1,
+                1,
+            )
+            self.entries_grid.attach(
+                Gtk.Label(
+                    label='<span weight="bold" size="large">Date taken</span>',
+                    use_markup=True,
+                ),
+                1,
+                0,
+                1,
+                1,
+            )
+            self.entries_grid.attach(
+                Gtk.Label(
+                    hexpand=True,
+                    label='<span weight="bold" size="large">Output file name</span>',
+                    use_markup=True,
+                ),
+                2,
+                0,
+                1,
+                1,
+            )
+
             for i, entry in enumerate(self._entries):
                 self.entries_grid.attach(
                     Gtk.Label(hexpand=True, label=entry.filename), 0, i + 1, 1, 1
