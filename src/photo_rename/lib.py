@@ -16,14 +16,11 @@ __version__ = "0.2.0"
 
 
 class RenameEntry:
-    filename: str
-    date: datetime
-    output: str
-
-    def __init__(self, filename: str, date: datetime) -> None:
+    def __init__(self, filename: str, date: datetime, rename: bool = True) -> None:
         self.filename = filename
         self.date = date
         self.output = "_".join([date.strftime(OUTPUT_DATE_FORMAT), filename])
+        self.rename = rename
 
 
 def grab_image_datetime(path: Path) -> datetime | None:
