@@ -21,5 +21,5 @@ build-backend = "uv_build"
 dev = ["pygobject-stubs>=2.14.0"]
 
 [project.scripts]
-photo-rename = "photo_rename.main:main_cli"
+photo-rename = "photo_rename.cli:main_cli"
 photo-rename-gui = "photo_rename.adw:main"

@@ -1,8 +1,9 @@
 from datetime import datetime
+from pathlib import Path
 
 from PIL import Image
 
-from photo_rename.main import (
+from photo_rename.lib import (
     EXIF_DATE_FORMAT,
     EXIF_DATETIME_TAG,
     EXIF_DATETIME_ORIG_TAG,
@@ -11,10 +12,10 @@ from photo_rename.main import (
     grab_image_datetime,
 )
 
-test_image_path = "test_image.jpg"
+test_image_path = Path("./tests/test_image.jpg")
 
 
-def test_something():
+def test_rename_entry_structure():
     file = "some_file.jpg"
     date = datetime.now()
     date_output = date.strftime(OUTPUT_DATE_FORMAT)
