@@ -13,6 +13,6 @@ Now also has GUI framework on GNU/Linux systems through usage of libadwaita.
 ## Ideas for future
 
 - [x] extract common code between CLI app and GUI app to a separate module
-- [ ] selection of files to rename
+- [x] selection of files to rename
 - [ ] introduce configuration file for output format
 - [ ] design even better GUI?
