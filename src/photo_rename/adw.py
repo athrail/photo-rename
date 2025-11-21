@@ -11,7 +11,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gio, Gtk
 
 
-OUTPUT_DATE_FORMAT = "%Y-%m-%d"
+config = lib.Config()
 
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -51,7 +51,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.box_sidebar.append(Gtk.Box(vexpand=True))
 
-        self.btn_about = Gtk.Button(label="About", tooltip_text="Shows about window")
+        self.btn_prefs = Gtk.Button(label="Preferences")
+        self.box_sidebar.append(self.btn_prefs)
+        self.btn_prefs.connect("clicked", self.on_btn_prefs_clicked)
+
+        self.btn_about = Gtk.Button(label="About")
         self.box_sidebar.append(self.btn_about)
         self.btn_about.connect("clicked", self.on_btn_about_clicked)
 
@@ -143,7 +147,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     Gtk.Label(hexpand=True, label=entry.filename), 1, i + 1, 1, 1
                 )
                 self.grid_entries.attach(
-                    Gtk.Label(label=entry.date.strftime(lib.TABLE_DATE_FORMAT)),
+                    Gtk.Label(label=entry.date.strftime(config.table_date_format)),
                     2,
                     i + 1,
                     1,
@@ -162,8 +166,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._entries[i].rename = widget.get_active()
 
     def on_btn_about_clicked(self, _):
-        dialog = Adw.AboutWindow(
-            transient_for=self,
+        dialog = Adw.AboutDialog(
             application_name="Photo Renamer",
             version=lib.__version__,
             developer_name="Krzysztof Lewandowski",
@@ -172,7 +175,40 @@ class MainWindow(Gtk.ApplicationWindow):
             website="https://github.com/athrail/photo-rename",
             copyright="© 2025 Krzysztof Lewandowski",
         )
-        dialog.set_visible(True)
+        dialog.present(parent=self)
+
+    def on_btn_prefs_clicked(self, _):
+        def on_pref_output_format_entry_changed(widget):
+            if not isinstance(widget, Adw.EntryRow):
+                return
+
+            config.output_date_format = widget.get_text()
+
+        def on_pref_table_format_entry_changed(widget):
+            if not isinstance(widget, Adw.EntryRow):
+                return
+
+            config.table_date_format = widget.get_text()
+
+        page1 = Adw.PreferencesPage(title="Preferences")
+        pref_group_format = Adw.PreferencesGroup(
+            title="Format", description="Preferences on formatting of the file names"
+        )
+        page1.add(pref_group_format)
+        pref_output_format_entry = Adw.EntryRow(
+            title="Output date format", text=config.output_date_format
+        )
+        pref_output_format_entry.connect("changed", on_pref_output_format_entry_changed)
+        pref_table_format_entry = Adw.EntryRow(
+            title="Table date format", text=config.table_date_format
+        )
+        pref_table_format_entry.connect("changed", on_pref_table_format_entry_changed)
+        pref_group_format.add(pref_output_format_entry)
+        pref_group_format.add(pref_table_format_entry)
+
+        dialog = Adw.PreferencesDialog(title="Preferences", can_close=True)
+        dialog.add(page1)
+        dialog.present(parent=self)
 
     def on_btn_open_dir_clicked(self, _):
         self.dir_dialog.select_folder(parent=self, callback=self.on_open_dir_callback)
@@ -189,7 +225,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.selected_dir is None:
             return
 
-        self._entries = lib.traverse_dir_for_images(self.selected_dir)
+        self._entries = lib.traverse_dir_for_images(self.selected_dir, config)
 
         self._refresh_entries()
 

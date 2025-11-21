@@ -10,16 +10,28 @@ EXIF_DATETIME_ORIG_TAG = 0x9003
 EXIF_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
 # OUTPUT_DATE_FORMAT = "%Y_%m_%d_%H%M%S"
 OUTPUT_DATE_FORMAT = "%Y-%m-%d"
-TABLE_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
+TABLE_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 __version__ = "0.2.0"
 
 
+class Config:
+    def __init__(self) -> None:
+        self.output_date_format = OUTPUT_DATE_FORMAT
+        self.table_date_format = TABLE_DATE_FORMAT
+
+
 class RenameEntry:
-    def __init__(self, filename: str, date: datetime, rename: bool = True) -> None:
+    def __init__(
+        self,
+        filename: str,
+        date: datetime,
+        output_date_format: str = OUTPUT_DATE_FORMAT,
+        rename: bool = True,
+    ) -> None:
         self.filename = filename
         self.date = date
-        self.output = "_".join([date.strftime(OUTPUT_DATE_FORMAT), filename])
+        self.output = "_".join([date.strftime(output_date_format), filename])
         self.rename = rename
 
 
@@ -35,7 +47,9 @@ def grab_image_datetime(path: Path) -> datetime | None:
         return datetime.strptime(date, EXIF_DATE_FORMAT)
 
 
-def traverse_dir_for_images(location: str) -> List[RenameEntry]:
+def traverse_dir_for_images(
+    location: str, config: Config = Config()
+) -> List[RenameEntry]:
     path = Path(location)
     if not path.exists():
         return []
@@ -46,6 +60,8 @@ def traverse_dir_for_images(location: str) -> List[RenameEntry]:
         if Path.is_file(item):
             if item.suffix.lower() in (".jpg", ".jpeg"):
                 if (date := grab_image_datetime(item)) is not None:
-                    entries.append(RenameEntry(item.name, date))
+                    entries.append(
+                        RenameEntry(item.name, date, config.output_date_format)
+                    )
 
     return entries
