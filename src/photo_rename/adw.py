@@ -215,8 +215,15 @@ class MainWindow(Adw.ApplicationWindow):
         pref_group_format.add(pref_table_format_entry)
 
         dialog = Adw.PreferencesDialog(title="Preferences", can_close=True)
+        dialog.connect("closed", self.on_prefs_dialog_closed)
         dialog.add(page1)
         dialog.present(parent=self)
+
+    def on_prefs_dialog_closed(self, _):
+        for entry in self._entries:
+            entry.change_output_format(config.output_date_format)
+
+        self._refresh_entries()
 
     def on_btn_open_dir_clicked(self, _):
         self.dialog_select_dir.select_folder(

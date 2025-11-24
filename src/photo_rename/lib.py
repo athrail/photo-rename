@@ -31,8 +31,11 @@ class RenameEntry:
     ) -> None:
         self.filename = filename
         self.date = date
-        self.output = "_".join([date.strftime(output_date_format), filename])
+        self.output = "_".join([self.date.strftime(output_date_format), self.filename])
         self.rename = rename
+
+    def change_output_format(self, new_format: str) -> None:
+        self.output = "_".join([self.date.strftime(new_format), self.filename])
 
 
 def grab_image_datetime(path: Path) -> datetime | None:
