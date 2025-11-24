@@ -14,15 +14,16 @@ from gi.repository import Adw, Gio, Gtk
 config = lib.Config()
 
 
-class MainWindow(Gtk.ApplicationWindow):
+class MainWindow(Adw.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.box_main = Gtk.Box(spacing=20, orientation=Gtk.Orientation.HORIZONTAL)
         self.box_main.set_margin_bottom(20)
         self.box_main.set_margin_top(20)
         self.box_main.set_margin_start(20)
         self.box_main.set_margin_end(20)
-        self.set_child(self.box_main)
+        self.set_content(self.box_main)
 
         self.box_sidebar = Gtk.Box(
             spacing=10, orientation=Gtk.Orientation.VERTICAL, width_request=150
@@ -74,8 +75,8 @@ class MainWindow(Gtk.ApplicationWindow):
         )
         self._refresh_entries()
 
-        self.dir_dialog = Gtk.FileDialog(
-            title="Chose directory",
+        self.dialog_select_dir = Gtk.FileDialog(
+            title="Chose directory with images",
             modal=True,
         )
 
@@ -211,7 +212,9 @@ class MainWindow(Gtk.ApplicationWindow):
         dialog.present(parent=self)
 
     def on_btn_open_dir_clicked(self, _):
-        self.dir_dialog.select_folder(parent=self, callback=self.on_open_dir_callback)
+        self.dialog_select_dir.select_folder(
+            parent=self, callback=self.on_open_dir_callback
+        )
 
     def on_open_dir_callback(self, dialog: Gtk.FileDialog, task: Gio.Task):
         if task.had_error():
