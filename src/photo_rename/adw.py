@@ -60,6 +60,10 @@ class MainWindow(Adw.ApplicationWindow):
         self.box_sidebar.append(self.btn_about)
         self.btn_about.connect("clicked", self.on_btn_about_clicked)
 
+        self.btn_quit = Gtk.Button(label="Quit")
+        self.box_sidebar.append(self.btn_quit)
+        self.btn_quit.connect("clicked", self.on_btn_quit_clicked)
+
         self.box_content = Gtk.Box(
             spacing=10, orientation=Gtk.Orientation.VERTICAL, hexpand=True
         )
@@ -177,6 +181,9 @@ class MainWindow(Adw.ApplicationWindow):
             copyright="© 2025 Krzysztof Lewandowski",
         )
         dialog.present(parent=self)
+
+    def on_btn_quit_clicked(self, _):
+        sys.exit(0)
 
     def on_btn_prefs_clicked(self, _):
         def on_pref_output_format_entry_changed(widget):
