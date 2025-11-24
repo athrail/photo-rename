@@ -1,6 +1,6 @@
 [project]
 name = "photo-rename"
-version = "0.1.0"
+version = "0.2.0"
 description = "Tool to rename photos based on EXIF dates"
 authors = [{ name = "Krzysztof Lewandowski", email = "krzlew1@gmail.com" }]
 readme = "README.md"
